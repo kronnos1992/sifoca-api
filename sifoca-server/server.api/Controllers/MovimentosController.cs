@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using server.api.DTOs;
@@ -217,6 +218,26 @@ namespace server.api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region MOVIMENTO ENDPOINTS
+        [HttpGet]
+        public async Task<IActionResult> GetAllMovimentos()
+        {
+            try
+            {
+                var movimentos = await contract.GetMovimentos();
+                if (movimentos == null)
+                {
+                    return NotFound();
+                }
+                return Ok(movimentos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
         #endregion

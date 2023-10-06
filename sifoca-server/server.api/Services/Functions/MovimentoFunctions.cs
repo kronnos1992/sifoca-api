@@ -275,5 +275,25 @@ namespace server.api.Services.Functions
         }
 
         #endregion
+
+        #region GERAL
+        public async Task<IEnumerable<Movimento>> GetMovimentos()
+        {
+            try
+            {
+                var movimentos = await sifoca.Tb_Movimento.ToListAsync();
+                if (movimentos == null)
+                {
+                    return null;
+                }
+                return movimentos;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion
     }
 }

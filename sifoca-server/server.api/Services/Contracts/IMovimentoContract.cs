@@ -21,5 +21,8 @@ namespace server.api.Services.Contracts
         Task<IEnumerable<Saida>> GetSaidas();
         Task<IEnumerable<Saida>> GetSaidas(string op);
         Task<Saida> GetSaidas(int id);
+
+        //GERAL
+        Task<IEnumerable<Movimento>> GetMovimentos();
     }
 }

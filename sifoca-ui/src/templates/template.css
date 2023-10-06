@@ -1,0 +1,89 @@
+
+.logo-link {
+    max-height: 4rem !important;
+    display: block;
+    block-size: auto;
+    max-width: 15rem;
+}
+
+.logo{
+    width: 12rem;
+    height: 3rem;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+.myrow{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.appLink{
+    justify-content: flex-start;
+    color: #3a3f41;
+    padding: 0.5rem;
+    list-style: none;
+    text-decoration: none;
+    font-size: 20px;
+    transition: all 0.3s ease-in-out;
+}
+.appLink:hover {
+    background: #000000;
+    border-left: 4px solid #cfa414;
+    color: #b2c8d2;
+    transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    cursor: pointer;
+}
+
+.appButton{
+    justify-content: flex-start;
+    color: #3a3f41;
+    padding: 1rem;
+    list-style: none;
+    text-decoration: none;
+    font-size: 20px;
+    transition: all 0.3s ease-in-out;    
+}
+
+.appButton:hover {
+    background: #000000;
+    border-left: 4px solid #cfa414;
+    color: #b2c8d2;
+    transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    cursor: pointer;
+}
+
+/* Efeito de transparencia */
+/* Estilo para a transição de fade-in */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Estilo para a transição de fade-out */
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+

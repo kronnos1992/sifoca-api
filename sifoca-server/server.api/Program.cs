@@ -17,6 +17,7 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 builder.Services.AddDbContext<SifocaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("default"))
@@ -27,6 +28,13 @@ builder.Services.AddDbContext<SifocaContext>(options =>
 builder.Services.AddScoped<IMovimentoContract, MovimentoFunctions>();
 
 var app = builder.Build();
+
+app.UseCors(p =>
+{
+    p.AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

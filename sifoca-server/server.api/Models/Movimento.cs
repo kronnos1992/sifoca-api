@@ -6,6 +6,7 @@ namespace server.api.Models
     {
         public string Categoria { get; set; }
         public string Descricao { get; set; }
+        public string Area { get; set; }
         public decimal Valor { get; set; }
         public decimal Caixa { get; set; }
         public List<Entrada> Entradas { get; set; }

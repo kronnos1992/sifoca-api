@@ -93,7 +93,7 @@ namespace server.api.Controllers
         }
 
         [HttpPost("entrada/")]
-        public async Task<IActionResult> Insert(MovimentoDTO movimento)
+        public async Task<IActionResult> Insert(EntradaDTO movimento)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace server.api.Controllers
         }
 
         [HttpPut("entrada/{id}")]
-        public async Task<IActionResult> Update(MovimentoDTO movimento, int id)
+        public async Task<IActionResult> Update(EntradaDTO movimento, int id)
         {
             try
             {
@@ -120,7 +120,6 @@ namespace server.api.Controllers
             }
         }
         #endregion
-
 
         #region SAÍDA ENDPOINTS
         [HttpGet("saida/")]

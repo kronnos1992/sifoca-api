@@ -73,7 +73,7 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro na busca dos dados {ex.Message}");
             }
         }
-        public async Task CreateEntrada(MovimentoDTO movimento)
+        public async Task CreateEntrada(EntradaDTO movimento)
         {
             try
             {
@@ -82,15 +82,18 @@ namespace server.api.Services.Functions
                     fundo.Total += movimento.Valor;
                 var entrada = new Entrada
                 {
-                    Operador = movimento.Operador,
+                    Operador = movimento.Operador.ToUpper(),
+                    TipoPagamento = movimento.TipoPagamento.ToUpper(),
+                    Assinante = movimento.Assinante.ToUpper(),
                     DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
                     DataAtualizacao = "",
                     Movimento = new Movimento
                     {
-                        Categoria = "Entrada".ToLower(),
-                        Descricao = movimento.Descricao.ToLower(),
+                        Categoria = "Entrada".ToUpper(),
+                        Descricao = movimento.Descricao.ToUpper(),
                         DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
                         Valor = movimento.Valor,
+                        Area = movimento.Area,
                         Caixa = fundo.Total,
                         DataAtualizacao = "",
                     }
@@ -105,7 +108,7 @@ namespace server.api.Services.Functions
                 throw new Exception(ex.Message);
             }
         }
-        public async Task UpdateEntrada(MovimentoDTO movimento, int id)
+        public async Task UpdateEntrada(EntradaDTO movimento, int id)
         {
             try
             {
@@ -113,8 +116,8 @@ namespace server.api.Services.Functions
 
                 if (entrada != null)
                 {
-                    entrada.Operador = movimento.Operador;
-                    entrada.Movimento.Descricao = movimento.Descricao;
+                    entrada.Operador = movimento.Operador.ToUpper();
+                    entrada.Movimento.Descricao = movimento.Descricao.ToUpper();
                     entrada.Movimento.Valor = movimento.Valor;
                     entrada.DataAtualizacao = DateAndTime.Now.ToString("dd/MM/yyyy - HH:mm");
 
@@ -150,28 +153,40 @@ namespace server.api.Services.Functions
         public async Task CreateSaida(MovimentoDTO movimento)
         {
             var fundo = await sifoca.Tb_Fundo.FindAsync("caixa");
-            if (fundo.Id != null)
-                fundo.Total -= movimento.Valor;
             try
             {
-                var saida = new Saida
+                if (fundo.Id != null)
                 {
-                    Responsável = movimento.Operador,
-                    DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
-                    DataAtualizacao = "",
-                    Movimento = new Movimento
+                    if (fundo.Total >= 10000)
                     {
-                        Categoria = "Saida".ToLower(),
-                        Descricao = movimento.Descricao.ToLower(),
-                        Valor = movimento.Valor,
-                        DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
-                        DataAtualizacao = "",
-                        Caixa = fundo.Total
-                    }
-                };
+                        if (movimento.Valor < fundo.Total)
+                        {
+                            fundo.Total -= movimento.Valor;
+                            var saida = new Saida
+                            {
+                                Responsável = movimento.Operador.ToUpper(),
+                                DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
+                                DataAtualizacao = "",
+                                Movimento = new Movimento
+                                {
+                                    Categoria = "Saida".ToUpper(),
+                                    Descricao = movimento.Descricao.ToUpper(),
+                                    Valor = movimento.Valor,
+                                    DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
+                                    Area = movimento.Area.ToUpper(),
+                                    DataAtualizacao = "",
+                                    Caixa = fundo.Total
+                                }
+                            };
 
-                await sifoca.AddRangeAsync(saida);
-                await sifoca.SaveChangesAsync();
+                            await sifoca.AddRangeAsync(saida);
+                            await sifoca.SaveChangesAsync();
+                        }
+                        throw new Exception("Fundo Insuficiente.");
+                    }
+                    throw new Exception("Fundo insuficiente.");
+                }
+                throw new NullReferenceException("Caixa não registrada.");
             }
             catch (Exception ex)
             {
@@ -186,8 +201,8 @@ namespace server.api.Services.Functions
 
                 if (saida != null)
                 {
-                    saida.Responsável = movimento.Operador;
-                    saida.Movimento.Descricao = movimento.Descricao;
+                    saida.Responsável = movimento.Operador.ToUpper();
+                    saida.Movimento.Descricao = movimento.Descricao.ToUpper();
                     saida.Movimento.Valor = movimento.Valor;
                     saida.DataAtualizacao = DateAndTime.Now.ToString("dd/MM/yyyy - HH:mm");
 

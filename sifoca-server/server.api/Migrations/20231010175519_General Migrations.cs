@@ -5,7 +5,7 @@
 namespace server.api.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationsDb : Migration
+    public partial class GeneralMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,7 @@ namespace server.api.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Categoria = table.Column<string>(type: "TEXT", nullable: false),
                     Descricao = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    Area = table.Column<string>(type: "TEXT", nullable: false),
                     Valor = table.Column<decimal>(type: "TEXT", precision: 10, scale: 2, nullable: false),
                     Caixa = table.Column<decimal>(type: "TEXT", nullable: false),
                     DataRegistro = table.Column<string>(type: "TEXT", nullable: false),
@@ -46,6 +47,8 @@ namespace server.api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false),
                     Operador = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    TipoPagamento = table.Column<string>(type: "TEXT", nullable: false),
+                    Assinante = table.Column<string>(type: "TEXT", nullable: false),
                     DataRegistro = table.Column<string>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<string>(type: "TEXT", nullable: false)
                 },

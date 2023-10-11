@@ -10,8 +10,8 @@ using server.api.Services.Context;
 namespace server.api.Migrations
 {
     [DbContext(typeof(SifocaContext))]
-    [Migration("20231004104421_MigrationsDb")]
-    partial class MigrationsDb
+    [Migration("20231010175519_General Migrations")]
+    partial class GeneralMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,10 @@ namespace server.api.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Assinante")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DataAtualizacao")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -35,6 +39,10 @@ namespace server.api.Migrations
                     b.Property<string>("Operador")
                         .IsRequired()
                         .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TipoPagamento")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -71,6 +79,10 @@ namespace server.api.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Caixa")
                         .HasColumnType("TEXT");

@@ -21,6 +21,10 @@ namespace server.api.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Assinante")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DataAtualizacao")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -32,6 +36,10 @@ namespace server.api.Migrations
                     b.Property<string>("Operador")
                         .IsRequired()
                         .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TipoPagamento")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -68,6 +76,10 @@ namespace server.api.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Caixa")
                         .HasColumnType("TEXT");

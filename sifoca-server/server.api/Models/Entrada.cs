@@ -8,6 +8,8 @@ namespace server.api.Models
     public class Entrada : TabelaBase
     {
         public string Operador { get; set; }
+        public string TipoPagamento { get; set; }
+        public string Assinante { get; set; }
         public Movimento Movimento { get; set; }
     }
 }

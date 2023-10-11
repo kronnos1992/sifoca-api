@@ -7,8 +7,8 @@ namespace server.api.Services.Contracts
     {
 
         // Entradas
-        Task CreateEntrada(MovimentoDTO movimento);
-        Task UpdateEntrada(MovimentoDTO movimento, int id);
+        Task CreateEntrada(EntradaDTO movimento);
+        Task UpdateEntrada(EntradaDTO movimento, int id);
         Task DeleteEntrada(int id);
         Task<IEnumerable<Entrada>> GetEntradas();
         Task<IEnumerable<Entrada>> GetEntradas(string op);

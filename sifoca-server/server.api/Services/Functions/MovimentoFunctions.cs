@@ -1,4 +1,3 @@
-using System.IO.Pipelines;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using server.api.DTOs;
@@ -41,9 +40,10 @@ namespace server.api.Services.Functions
             try
             {
                 var entradas = await sifoca.Tb_Entrada
-                .Where(p => p.Operador.ToLower().Contains(op))
-                .Include(p => p.Movimento)
-                .ToListAsync();
+                    .OrderBy(p => p.DataAtualizacao)
+                    .Where(p => p.Operador.ToLower().Contains(op))
+                    .Include(p => p.Movimento)
+                    .ToListAsync();
 
                 if (entradas == null)
                 {
@@ -61,7 +61,8 @@ namespace server.api.Services.Functions
             try
             {
                 var entrada = await sifoca.Tb_Entrada
-                .FirstOrDefaultAsync(p => p.Id == id);
+                    .OrderBy(p => p.DataAtualizacao)
+                    .FirstOrDefaultAsync(p => p.Id == id);
                 if (entrada == null)
                 {
                     return null;
@@ -85,13 +86,14 @@ namespace server.api.Services.Functions
                     Operador = movimento.Operador.ToUpper(),
                     TipoPagamento = movimento.TipoPagamento.ToUpper(),
                     Assinante = movimento.Assinante.ToUpper(),
-                    DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                    FormaPagamento = movimento.FormaPagamento.ToUpper(),
                     DataAtualizacao = "",
                     Movimento = new Movimento
                     {
                         Categoria = "Entrada".ToUpper(),
                         Descricao = movimento.Descricao.ToUpper(),
-                        DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
+                        DataRegistro = Generic.GetCurrentAngolaDateTime(),
                         Valor = movimento.Valor,
                         Area = movimento.Area,
                         Caixa = fundo.Total,
@@ -119,6 +121,7 @@ namespace server.api.Services.Functions
                     entrada.Operador = movimento.Operador.ToUpper();
                     entrada.Movimento.Descricao = movimento.Descricao.ToUpper();
                     entrada.Movimento.Valor = movimento.Valor;
+                    entrada.FormaPagamento = movimento.FormaPagamento.ToUpper();
                     entrada.DataAtualizacao = DateAndTime.Now.ToString("dd/MM/yyyy - HH:mm");
 
                     sifoca.UpdateRange(entrada);
@@ -146,7 +149,6 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro de servidor, {ex.Message}");
             }
         }
-
         #endregion
 
         #region SAÍDAS
@@ -155,38 +157,33 @@ namespace server.api.Services.Functions
             var fundo = await sifoca.Tb_Fundo.FindAsync("caixa");
             try
             {
-                if (fundo.Id != null)
-                {
-                    if (fundo.Total >= 10000)
-                    {
-                        if (movimento.Valor < fundo.Total)
-                        {
-                            fundo.Total -= movimento.Valor;
-                            var saida = new Saida
-                            {
-                                Responsável = movimento.Operador.ToUpper(),
-                                DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
-                                DataAtualizacao = "",
-                                Movimento = new Movimento
-                                {
-                                    Categoria = "Saida".ToUpper(),
-                                    Descricao = movimento.Descricao.ToUpper(),
-                                    Valor = movimento.Valor,
-                                    DataRegistro = DateTime.Now.ToString("dd/MM/yyyy - HH:mm"),
-                                    Area = movimento.Area.ToUpper(),
-                                    DataAtualizacao = "",
-                                    Caixa = fundo.Total
-                                }
-                            };
+                if (fundo.Id == string.Empty)
+                    throw new Exception("Caixa não registrada."); if (fundo.Total >= 10000)
 
-                            await sifoca.AddRangeAsync(saida);
-                            await sifoca.SaveChangesAsync();
-                        }
-                        throw new Exception("Fundo Insuficiente.");
+                    if (fundo.Total <= 10000)
+                        throw new Exception("Fundo insuficiente");
+
+                if (fundo.Total < movimento.Valor)
+                    throw new Exception("Fundo insuficiente");
+                fundo.Total -= movimento.Valor;
+                var saida = new Saida
+                {
+                    Responsável = movimento.Operador.ToUpper(),
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                    DataAtualizacao = "",
+                    Movimento = new Movimento
+                    {
+                        Categoria = "Saida".ToUpper(),
+                        Descricao = movimento.Descricao.ToUpper(),
+                        Valor = movimento.Valor,
+                        DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                        Area = movimento.Area.ToUpper(),
+                        DataAtualizacao = "",
+                        Caixa = fundo.Total
                     }
-                    throw new Exception("Fundo insuficiente.");
-                }
-                throw new NullReferenceException("Caixa não registrada.");
+                };
+                await sifoca.AddRangeAsync(saida);
+                await sifoca.SaveChangesAsync();
             }
             catch (Exception ex)
             {

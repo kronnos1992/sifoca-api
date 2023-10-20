@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using server.api.DTOs;
+using server.api.Models;
+
+namespace server.api.Services.Contracts
+{
+    public interface IAcessoContract
+    {
+        public Task<UserDTO> RegisterAsync(UserDTO user);
+        public Task<IEnumerable<AppRole>> GetRoles();
+        public Task<IEnumerable<AppUser>> GetUsers();
+        public Task<AuthResult> LoginAsync(LoginDTO login);
+        Task<string> CreateRoleAsync(string roleName);
+        Task<string> AssignRoleToUser(string userId, string roleName);
+        Task<bool> DeleteUser(string userId);
+        Task<bool> DeleteRole(string roleId);
+        Task<bool> UpdateteUser(string userId, UserDTO user);
+        Task<bool> UpdateteRole(string roleId, RoleDTO roleDTO);
+        Task<string> GenerateToken(AppUser appUser);
+    }
+}

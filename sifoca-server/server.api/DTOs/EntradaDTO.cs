@@ -41,6 +41,7 @@ namespace server.api.DTOs
         ]
         public string? Area { get; set; }
         public string TipoPagamento { get; set; }
+        public string FormaPagamento { get; set; }
         public string Assinante { get; set; } = "Particular";
     }
 }

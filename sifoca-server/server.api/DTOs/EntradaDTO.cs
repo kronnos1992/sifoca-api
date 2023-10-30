@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace server.api.DTOs
 {
@@ -40,8 +36,8 @@ namespace server.api.DTOs
             ErrorMessageResourceName = "o campo Area requer no minimo 5 caracters")
         ]
         public string? Area { get; set; }
-        public string TipoPagamento { get; set; }
-        public string FormaPagamento { get; set; }
+        public required string TipoPagamento { get; set; }
+        public required string FormaPagamento { get; set; }
         public string Assinante { get; set; } = "Particular";
     }
 }

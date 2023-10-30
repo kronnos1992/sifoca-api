@@ -1,5 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using server.api.DTOs;
 using server.api.Models;
 using server.api.Services.Context;
@@ -17,12 +17,14 @@ namespace server.api.Services.Functions
         }
 
         #region ENTRADAS
-        public async Task<IEnumerable<Entrada>?> GetEntradas()
+        public async Task<IEnumerable<Entrada>?> GetEntradas(DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
                 var entradas = await sifoca.Tb_Entrada
                 .Include(p => p.Movimento)
+                .OrderBy(x => x.DataRegistro)
+                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
                 .ToListAsync();
                 if (entradas == null)
                 {
@@ -35,14 +37,16 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro na busca dos dados {ex.Message}");
             }
         }
-        public async Task<IEnumerable<Entrada>?> GetEntradas(string op)
+        public async Task<IEnumerable<Entrada>?> GetEntradas(string op, DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
                 var entradas = await sifoca.Tb_Entrada
-                    .OrderBy(p => p.DataAtualizacao)
-                    .Where(p => p.Operador.ToLower().Contains(op))
+                    .OrderBy(p => p.DataRegistro)
+                    .Where(p => p.Operador.Contains(op.ToUpper()) 
+                        && p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
                     .Include(p => p.Movimento)
+
                     .ToListAsync();
 
                 if (entradas == null)
@@ -56,13 +60,13 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro na busca dos dados {ex.Message}");
             }
         }
-        public async Task<Entrada?> GetEntradas(int id)
+        public async Task<Entrada> GetEntradas(int id)
         {
             try
             {
                 var entrada = await sifoca.Tb_Entrada
-                    .OrderBy(p => p.DataAtualizacao)
-                    .FirstOrDefaultAsync(p => p.Id == id);
+                    .Include(p => p.Movimento)
+                    .FirstOrDefaultAsync( x => x.Id == id);
                 if (entrada == null)
                 {
                     return null;
@@ -88,7 +92,7 @@ namespace server.api.Services.Functions
                     Assinante = movimento.Assinante.ToUpper(),
                     DataRegistro = Generic.GetCurrentAngolaDateTime(),
                     FormaPagamento = movimento.FormaPagamento.ToUpper(),
-                    DataAtualizacao = "",
+                    DataAtualizacao = null,
                     Movimento = new Movimento
                     {
                         Categoria = "Entrada".ToUpper(),
@@ -97,7 +101,7 @@ namespace server.api.Services.Functions
                         Valor = movimento.Valor,
                         Area = movimento.Area,
                         Caixa = fundo.Total,
-                        DataAtualizacao = "",
+                        DataAtualizacao = null,
                     }
                 };
 
@@ -122,7 +126,7 @@ namespace server.api.Services.Functions
                     entrada.Movimento.Descricao = movimento.Descricao.ToUpper();
                     entrada.Movimento.Valor = movimento.Valor;
                     entrada.FormaPagamento = movimento.FormaPagamento.ToUpper();
-                    entrada.DataAtualizacao = DateAndTime.Now.ToString("dd/MM/yyyy - HH:mm");
+                    entrada.DataAtualizacao = Generic.GetCurrentAngolaDateTime();
 
                     sifoca.UpdateRange(entrada);
                     await sifoca.SaveChangesAsync();
@@ -149,6 +153,53 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro de servidor, {ex.Message}");
             }
         }
+        
+        public async Task<IEnumerable<Entrada>> GetEntradas(DateTime dataInicial, DateTime dataFinal, string area)
+        {
+            try
+            {
+                var entradas = await sifoca.Tb_Entrada
+                    .OrderBy(p => p.DataRegistro)
+                    .Include(p => p.Movimento)
+                    .Where(p => p.Movimento.Area.Contains(area.ToUpper()) && p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
+                    .Include(p => p.Movimento)
+
+                    .ToListAsync();
+
+                if (entradas == null)
+                {
+                    return null;
+                }
+                return entradas;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro na busca dos dados {ex.Message}");
+            }
+        }
+
+        public async Task<IEnumerable<Entrada>> GetEntradas(DateTime dataInicial, string formaPagamento, DateTime dataFinal)
+        {
+           try
+            {
+                var entradas = await sifoca.Tb_Entrada
+                    .OrderBy(p => p.DataRegistro)
+                    .Include(p => p.FormaPagamento.Contains(formaPagamento.ToUpper()) && p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
+                    .Include(p => p.Movimento)
+
+                    .ToListAsync();
+
+                if (entradas == null)
+                {
+                    return null;
+                }
+                return entradas;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro na busca dos dados {ex.Message}");
+            } 
+        }
         #endregion
 
         #region SAÍDAS
@@ -170,7 +221,7 @@ namespace server.api.Services.Functions
                 {
                     Responsável = movimento.Operador.ToUpper(),
                     DataRegistro = Generic.GetCurrentAngolaDateTime(),
-                    DataAtualizacao = "",
+                    DataAtualizacao = null,
                     Movimento = new Movimento
                     {
                         Categoria = "Saida".ToUpper(),
@@ -178,7 +229,7 @@ namespace server.api.Services.Functions
                         Valor = movimento.Valor,
                         DataRegistro = Generic.GetCurrentAngolaDateTime(),
                         Area = movimento.Area.ToUpper(),
-                        DataAtualizacao = "",
+                        DataAtualizacao = null,
                         Caixa = fundo.Total
                     }
                 };
@@ -201,7 +252,7 @@ namespace server.api.Services.Functions
                     saida.Responsável = movimento.Operador.ToUpper();
                     saida.Movimento.Descricao = movimento.Descricao.ToUpper();
                     saida.Movimento.Valor = movimento.Valor;
-                    saida.DataAtualizacao = DateAndTime.Now.ToString("dd/MM/yyyy - HH:mm");
+                    saida.DataAtualizacao = Generic.GetCurrentAngolaDateTime();
 
                     sifoca.UpdateRange(saida);
                     await sifoca.SaveChangesAsync();
@@ -289,11 +340,13 @@ namespace server.api.Services.Functions
         #endregion
 
         #region GERAL
-        public async Task<IEnumerable<Movimento>> GetMovimentos()
+        public async Task<IEnumerable<Movimento>> GetMovimentos(DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
-                var movimentos = await sifoca.Tb_Movimento.ToListAsync();
+                var movimentos = await sifoca.Tb_Movimento
+                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
+                .ToListAsync();
                 if (movimentos == null)
                 {
                     return null;

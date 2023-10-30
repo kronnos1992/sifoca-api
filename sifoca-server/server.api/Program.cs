@@ -121,7 +121,7 @@ builder.Services.AddAuthentication(o =>
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             // jwt definitions
-            ValidateIssuer = false,
+            ValidateIssuer = false, 
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateTokenReplay = true,
@@ -161,6 +161,8 @@ _builder.AddSignInManager<SignInManager<AppUser>>();
 _builder.Services.AddAuthorization();
 
 
+
+
 builder.Services.AddDbContext<SifocaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("default"))
 );
@@ -171,6 +173,7 @@ builder.Services.AddDbContext<SifocaContext>(options =>
 //);
 
 builder.Services.AddScoped<IMovimentoContract, MovimentoFunctions>();
+builder.Services.AddScoped<IAcessoContract, AcessoFunctions>();
 
 var app = builder.Build();
 

@@ -40,7 +40,7 @@ namespace siades.Controllers
                 {
                     return BadRequest("Erro ao cadastrar novo usuario");
                 }
-                return CreatedAtAction("SignUp", $"Usuário {user.NomeCompleto} registrado com sucesso!");
+                return CreatedAtAction("SignUp", $"Usuário {userDTO.NomeCompleto} registrado com sucesso!");
             }
             catch (Exception ex)
             {

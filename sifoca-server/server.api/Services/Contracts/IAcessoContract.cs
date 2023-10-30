@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using server.api.DTOs;
 using server.api.Models;
 
@@ -9,7 +5,7 @@ namespace server.api.Services.Contracts
 {
     public interface IAcessoContract
     {
-        public Task<UserDTO> RegisterAsync(UserDTO user);
+        public Task<string> RegisterAsync(UserDTO user);
         public Task<IEnumerable<AppRole>> GetRoles();
         public Task<IEnumerable<AppUser>> GetUsers();
         public Task<AuthResult> LoginAsync(LoginDTO login);

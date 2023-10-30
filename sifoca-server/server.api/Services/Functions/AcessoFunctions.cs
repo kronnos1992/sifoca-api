@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+//using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,26 +16,26 @@ namespace server.api.Services.Functions
         private readonly SignInManager<AppUser>? signInManager;
         private readonly RoleManager<AppRole>? roleManager;
         private readonly IConfiguration configuration;
-        private readonly IMapper mapper;
+        //private readonly IMapper mapper;
         private readonly UserManager<AppUser>? userManager;
         public AcessoFunctions(
             IConfiguration configuration,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            RoleManager<AppRole> roleManager, IMapper mapper)
+            RoleManager<AppRole> roleManager)
         {
 
             this.configuration = configuration;
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.mapper = mapper;
+           // this.mapper = mapper;
             this.roleManager = roleManager;
         }
         public async Task<string> CreateRoleAsync(string roleName)
         {
             try
             {
-                var role = await roleManager.CreateAsync(new AppRole(roleName));
+                var role = await roleManager.CreateAsync(new AppRole { Name = "MASTER" });
                 if (role.Succeeded)
                 {
                     return role.Succeeded.ToString();
@@ -79,17 +75,27 @@ namespace server.api.Services.Functions
                 throw new Exception("Erro de banco de dados", ex);
             }
         }
-        public async Task<UserDTO> RegisterAsync(UserDTO __user)
+        public async Task<string> RegisterAsync(UserDTO __user)
         {
             try
             {
-                var user = mapper.Map<AppUser>(__user);
+                var user = new AppUser
+                {
+                    NomeCompleto = __user.NomeCompleto,
+                    UserName = __user.Usuario,
+                    Email = __user.Email,
+                    PhoneNumber = __user.Telefone,
+                    Departamento = __user.Departamento,
+                    DataNascimento = __user.DataNascimento,
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                    DataAtualizacao = null
+                };
+
                 var userMaped = await userManager.CreateAsync(user, __user.Senha);
-                var output = mapper.Map<UserDTO>(user);
 
                 if (userMaped.Succeeded)
                 {
-                    return output;
+                    return $"Nome Completo: {user.NomeCompleto} \n Telefone: {user.PhoneNumber} \n Email: {user.Email}";
                 }
                 throw new Exception($"{userMaped.Errors}");
             }
@@ -132,7 +138,7 @@ namespace server.api.Services.Functions
                 var output = await signInManager.CheckPasswordSignInAsync(user, login.Password, false);
                 if (output.Succeeded)
                 {
-                    var returnLogin = mapper.Map<LoginDTO>(user);
+                    //var returnLogin = mapper.Map<LoginDTO>(user);
 
                     var token = await GenerateToken(user);
 
@@ -204,6 +210,7 @@ namespace server.api.Services.Functions
                 user.Email = userDTO.Email;
                 user.NomeCompleto = userDTO.NomeCompleto;
                 user.PhoneNumber = userDTO.Telefone;
+                user.DataAtualizacao = Generic.GetCurrentAngolaDateTime();
                 await userManager.UpdateAsync(user);
                 return true;
             }

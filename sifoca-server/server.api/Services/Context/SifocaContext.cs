@@ -16,14 +16,17 @@ namespace server.api.Services.Context
 
         }
 
+
         public DbSet<Movimento> Tb_Movimento { get; set; }
         public DbSet<Entrada> Tb_Entrada { get; set; }
         public DbSet<Saida> Tb_Saida { get; set; }
         public DbSet<Fundo> Tb_Fundo { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override async void OnModelCreating(ModelBuilder modelBuilder)
         {
             // MOVIMENTOS
+            var passwordHasher = new PasswordHasher<IdentityUser>();
+            var hashedPassword = passwordHasher.HashPassword(null, "master");
 
             modelBuilder.Entity<Movimento>()
                 .HasMany(m => m.Entradas)
@@ -134,29 +137,40 @@ namespace server.api.Services.Context
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder
-                .Entity<AppRole>()
-                .HasData(new AppRole("MASTER"));
-
-            modelBuilder
-                .Entity<AppUser>()
+            modelBuilder.Entity<AppUser>()
                 .HasData(new AppUser
                 {
-                    FullName = "USER MASTER",
+                    Id = 1,
+                    NomeCompleto = "USER MASTER",
                     UserName = "master",
-                    PasswordHash = "master",
+                    Departamento = "Geral",
+                    NormalizedUserName= "MASTER",
                     Email = "master@sifoca.ao",
                     PhoneNumber = "0000000",
-                    BirthDate = Generic.GetCurrentAngolaDateTime(),
-                    CreatedAt = Generic.GetCurrentAngolaDateTime(),
-                    UpdatedAt = ""
+                    PasswordHash = hashedPassword,
+                    DataNascimento = Generic.GetCurrentAngolaDateTime(),
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                    DataAtualizacao = null
                 });
+
+            //await Generic.SeedInitialDataAsync();
+
+            modelBuilder
+                .Entity<AppRole>()
+                .HasData(new AppRole
+                {
+                    Id = 1,
+                    Name = "MASTER",
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                });
+
             modelBuilder
                 .Entity<AppUserRole>()
                 .HasData(new AppUserRole
                 {
                     UserId = 1,
-                    RoleId = 1
+                    RoleId = 1,
+                    
                 });
 
             base.OnModelCreating(modelBuilder);

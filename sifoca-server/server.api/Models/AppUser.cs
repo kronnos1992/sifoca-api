@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
 namespace server.api.Models
 {
     public class AppUser : IdentityUser<int>
     {
-        public string? FullName { get; set; }
-        public string? BirthDate { get; set; }
-        public string? CreatedAt { get; set; }
-        public string? UpdatedAt { get; set; }
+        public string? NomeCompleto { get; set; }
+        public DateTime DataNascimento { get; set; }
+        public string Departamento { get; set; }
+        public DateTime? DataRegistro { get; set; }
+        public DateTime? DataAtualizacao { get; set; }
 
         public IEnumerable<AppUserRole>? Roles { get; set; }
     }

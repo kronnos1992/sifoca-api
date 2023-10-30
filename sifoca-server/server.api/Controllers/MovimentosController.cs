@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using server.api.DTOs;
 using server.api.Services.Contracts;
@@ -22,13 +17,13 @@ namespace server.api.Controllers
 
         #region ENTRADA ENDPOINTS
 
-        [HttpGet("entrada/")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("entrada/getall")]
+        public async Task<IActionResult> GetAll(DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
-                var entradas = await contract.GetEntradas();
-                if (entradas.Count() < 1)
+                var entradas = await contract.GetEntradas(dataInicial, dataFinal);
+                if (!entradas.Any())
                 {
                     return NoContent();
                 }
@@ -40,13 +35,13 @@ namespace server.api.Controllers
             }
         }
 
-        [HttpGet("entrada/{op}")]
-        public async Task<IActionResult> GetByOperator(string op)
+        [HttpGet("entrada/getbyop")]
+        public async Task<IActionResult> GetByOperator(string op, DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
-                var entradas = await contract.GetEntradas(op);
-                if (entradas.Count() < 1)
+                var entradas = await contract.GetEntradas(op, dataInicial, dataFinal);
+                if (!entradas.Any())
                 {
                     return NoContent();
                 }
@@ -58,25 +53,60 @@ namespace server.api.Controllers
             }
         }
 
+        [HttpGet("entrada/getbyarea")]
+        public async Task<IActionResult> GetByArea(DateTime dataInicial, DateTime dataFinal, string area)
+        {
+            try
+            {
+                var entradas = await contract.GetEntradas(dataInicial, dataFinal, area);
+                if (!entradas.Any())
+                {
+                    return NoContent();
+                }
+                return Ok(entradas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
 
-        [HttpGet("entrada/{id:int}")]
+        [HttpGet("entrada/getbyforma")]
+        public async Task<IActionResult> GetByForma(string forma, DateTime dataInicial, DateTime dataFinal)
+        {
+            try
+            {
+                var entradas = await contract.GetEntradas(forma, dataInicial, dataFinal);
+                if (!entradas.Any())
+                {
+                    return NoContent();
+                }
+                return Ok(entradas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpGet("entrada/getbyid")]
+        [Route(nameof(GetById))]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                var entradas = await contract.GetEntradas();
-                if (entradas.Count() < 1)
+                var entrada = await contract.GetEntradas(id);
+                if (entrada == null)
                 {
                     return NoContent();
                 }
-                return Ok(entradas);
+                return Ok(entrada);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
         }
-
 
         [HttpDelete("entrada/{id:int}")]
         public async Task<IActionResult> Delete(int id)
@@ -223,11 +253,11 @@ namespace server.api.Controllers
 
         #region MOVIMENTO ENDPOINTS
         [HttpGet]
-        public async Task<IActionResult> GetAllMovimentos()
+        public async Task<IActionResult> GetAllMovimentos(DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
-                var movimentos = await contract.GetMovimentos();
+                var movimentos = await contract.GetMovimentos(dataInicial, dataFinal);
                 if (movimentos == null)
                 {
                     return NotFound();

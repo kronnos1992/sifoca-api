@@ -11,7 +11,7 @@ namespace server.api.Services.Contracts
         Task UpdateEntrada(EntradaDTO movimento, int id);
         Task DeleteEntrada(int id);
         Task<IEnumerable<Entrada>> GetEntradas(DateTime dataInicial, DateTime dataFinal);
-        Task<IEnumerable<Entrada>> GetEntradas(string op, DateTime dataInicial, DateTime dataFinal);
+        Task<IEnumerable<Entrada>> GetOpEntradas(DateTime dataInicial, DateTime dataFinal);
         Task<IEnumerable<Entrada>> GetEntradas(DateTime dataInicial, DateTime dataFinal, string area);
         Task<IEnumerable<Entrada>> GetEntradas(DateTime dataInicial, string formaPagamento, DateTime dataFinal);
         Task<Entrada> GetEntradas(int id);

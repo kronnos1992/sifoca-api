@@ -28,7 +28,7 @@ namespace siades.Controllers
         }
 
         [HttpPost("signup")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "master")]
         [AllowAnonymous]
 
         public async Task<IActionResult> SignUp([FromBody] UserDTO userDTO)
@@ -106,8 +106,8 @@ namespace siades.Controllers
                 return StatusCode(500, ex);
             };
         }
-        [HttpGet("get-users")]
-        //[Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        [Authorize(Roles = "master")]
         [AllowAnonymous]
         public async Task<IActionResult> GetUsers()
         {

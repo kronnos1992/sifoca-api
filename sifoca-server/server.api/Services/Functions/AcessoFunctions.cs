@@ -117,7 +117,7 @@ namespace server.api.Services.Functions
         {
             try
             {
-                var users = await userManager.Users.Include(r => r.Roles).ToListAsync();
+                var users = await userManager.Users.ToListAsync();
                 if (users.Count == 0)
                 {
                     throw new Exception("nenhum registro encontrado. ");
@@ -133,20 +133,21 @@ namespace server.api.Services.Functions
         {
             try
             {
-                var user = await userManager.FindByNameAsync(login.Username) ?? throw new Exception("Usuário não encontrado.");
+                var user = await userManager
+                    .FindByNameAsync(login.Username) 
+                    ?? throw new Exception("Usuário não encontrado.");
 
                 var output = await signInManager.CheckPasswordSignInAsync(user, login.Password, false);
                 if (output.Succeeded)
                 {
                     //var returnLogin = mapper.Map<LoginDTO>(user);
-
                     var token = await GenerateToken(user);
-
                     return new AuthResult
                     {
                         Success = true,
                         Token = token,
-                        SuccessMessage = "Login efeituado com sucesso!"
+                        SuccessMessage = "Login efeituado com sucesso!",
+                        FullUserName = user.UserName
                     };
                 }
                 else

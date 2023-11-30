@@ -18,6 +18,7 @@ using server.api.Services.Context;
 using server.api.Services.Contracts;
 using server.api.Services.Functions;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -49,6 +50,7 @@ builder.Services.AddControllers(op =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(s =>
 {
     s.SwaggerDoc("v1", new OpenApiInfo
@@ -94,6 +96,7 @@ builder.Services.AddSwaggerGen(s =>
         }
     });
 });
+
 builder.Services.AddCors();
 
 builder.Services.AddDataProtection()
@@ -160,9 +163,6 @@ _builder.AddSignInManager<SignInManager<AppUser>>();
 //builder.Services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 _builder.Services.AddAuthorization();
 
-
-
-
 builder.Services.AddDbContext<SifocaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("default"))
 );
@@ -185,15 +185,16 @@ app.UseCors(p =>
 });
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(s =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(s =>
-    {
-        s.SwaggerEndpoint("/swagger/v1.0.1/swagger.json", "v1.0.1");
-        s.RoutePrefix = string.Empty;
-    });
-}
+    s.SwaggerEndpoint("swagger.json", "v1.0.1");
+    //s.RoutePrefix = string.Empty;
+});
+// if (app.Environment.IsDevelopment())
+// {
+    
+// }
 
 app.UseHttpsRedirection();
 

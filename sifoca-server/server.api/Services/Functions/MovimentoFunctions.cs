@@ -1,4 +1,4 @@
-using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using server.api.DTOs;
 using server.api.Models;
@@ -10,10 +10,14 @@ namespace server.api.Services.Functions
     public class MovimentoFunctions : IMovimentoContract
     {
         private readonly SifocaContext sifoca;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly UserManager<AppUser> userManager;
 
-        public MovimentoFunctions(SifocaContext sifoca)
+        public MovimentoFunctions(SifocaContext sifoca, UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             this.sifoca = sifoca;
+            this.userManager = userManager;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         #region ENTRADAS
@@ -23,9 +27,10 @@ namespace server.api.Services.Functions
             {
                 var entradas = await sifoca.Tb_Entrada
                 .Include(p => p.Movimento)
-                .OrderBy(x => x.DataRegistro)
+                .OrderByDescending(x => x.DataRegistro)
                 .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
                 .ToListAsync();
+
                 if (entradas == null)
                 {
                     return null;
@@ -37,13 +42,18 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro na busca dos dados {ex.Message}");
             }
         }
-        public async Task<IEnumerable<Entrada>?> GetEntradas(string op, DateTime dataInicial, DateTime dataFinal)
+        
+        public async Task<IEnumerable<Entrada>?> GetOpEntradas(DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
+                // Obter o usuário logado a partir do contexto HTTP
+                var username = httpContextAccessor.HttpContext.User.Identity.Name;
+                var user = await userManager.FindByNameAsync(username);
+
                 var entradas = await sifoca.Tb_Entrada
                     .OrderBy(p => p.DataRegistro)
-                    .Where(p => p.Operador.Contains(op.ToUpper()) 
+                    .Where(p => p.Operador.Contains(user.NomeCompleto) 
                         && p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
                     .Include(p => p.Movimento)
 
@@ -82,12 +92,17 @@ namespace server.api.Services.Functions
         {
             try
             {
+                // Obter o usuário logado a partir do contexto HTTP
+                var username = httpContextAccessor.HttpContext.User.Identity.Name;
+                var user = await userManager.FindByNameAsync(username);
+
                 var fundo = await sifoca.Tb_Fundo.FindAsync("caixa");
                 if (fundo.Id != null)
                     fundo.Total += movimento.Valor;
+
                 var entrada = new Entrada
                 {
-                    Operador = movimento.Operador.ToUpper(),
+                    Operador = user.NomeCompleto.ToUpper(),
                     TipoPagamento = movimento.TipoPagamento.ToUpper(),
                     Assinante = movimento.Assinante.ToUpper(),
                     DataRegistro = Generic.GetCurrentAngolaDateTime(),
@@ -99,7 +114,7 @@ namespace server.api.Services.Functions
                         Descricao = movimento.Descricao.ToUpper(),
                         DataRegistro = Generic.GetCurrentAngolaDateTime(),
                         Valor = movimento.Valor,
-                        Area = movimento.Area,
+                        Area = user.Departamento.ToUpper(),
                         Caixa = fundo.Total,
                         DataAtualizacao = null,
                     }
@@ -118,16 +133,19 @@ namespace server.api.Services.Functions
         {
             try
             {
+                // Obter o usuário logado a partir do contexto HTTP
+                var username = httpContextAccessor.HttpContext.User.Identity.Name;
+                var user = await userManager.FindByNameAsync(username);
                 var entrada = await sifoca.Tb_Entrada.Include(p => p.Movimento).FirstOrDefaultAsync(x => x.Id == id);
 
                 if (entrada != null)
                 {
-                    entrada.Operador = movimento.Operador.ToUpper();
+                    entrada.Operador = user.NomeCompleto.ToUpper();
                     entrada.Movimento.Descricao = movimento.Descricao.ToUpper();
                     entrada.Movimento.Valor = movimento.Valor;
                     entrada.FormaPagamento = movimento.FormaPagamento.ToUpper();
                     entrada.DataAtualizacao = Generic.GetCurrentAngolaDateTime();
-
+                    entrada.Movimento.Area = user.Departamento.ToUpper();
                     sifoca.UpdateRange(entrada);
                     await sifoca.SaveChangesAsync();
                 }
@@ -153,7 +171,6 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro de servidor, {ex.Message}");
             }
         }
-        
         public async Task<IEnumerable<Entrada>> GetEntradas(DateTime dataInicial, DateTime dataFinal, string area)
         {
             try

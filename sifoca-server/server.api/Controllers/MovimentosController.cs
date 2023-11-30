@@ -27,7 +27,7 @@ namespace server.api.Controllers
                 {
                     return NoContent();
                 }
-                return Ok(entradas);
+                return Ok(entradas); 
             }
             catch (Exception ex)
             {
@@ -36,11 +36,11 @@ namespace server.api.Controllers
         }
 
         [HttpGet("entrada/getbyop")]
-        public async Task<IActionResult> GetByOperator(string op, DateTime dataInicial, DateTime dataFinal)
+        public async Task<IActionResult> GetByOperator(DateTime dataInicial, DateTime dataFinal)
         {
             try
             {
-                var entradas = await contract.GetEntradas(op, dataInicial, dataFinal);
+                var entradas = await contract.GetOpEntradas(dataInicial, dataFinal);
                 if (!entradas.Any())
                 {
                     return NoContent();
@@ -76,7 +76,7 @@ namespace server.api.Controllers
         {
             try
             {
-                var entradas = await contract.GetEntradas(forma, dataInicial, dataFinal);
+                var entradas = await contract.GetEntradas(dataInicial,forma,  dataFinal);
                 if (!entradas.Any())
                 {
                     return NoContent();
@@ -255,6 +255,8 @@ namespace server.api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllMovimentos(DateTime dataInicial, DateTime dataFinal)
         {
+            dataInicial = Convert.ToDateTime("2023-10-20");
+            dataFinal = DateTime.Now;
             try
             {
                 var movimentos = await contract.GetMovimentos(dataInicial, dataFinal);

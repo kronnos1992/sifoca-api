@@ -48,9 +48,13 @@ builder.Services.AddControllers(op =>
         options.JsonSerializerOptions.UnknownTypeHandling = new JsonUnknownTypeHandling();
     });
 
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSwaggerGen(s =>
 {
     s.SwaggerDoc("v1", new OpenApiInfo
@@ -114,6 +118,7 @@ builder.Services.AddAuthentication(o =>
     })
     .AddJwtBearer(p =>
     {
+#pragma warning disable CS8604 // Possible null reference argument.
         p.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -131,6 +136,7 @@ builder.Services.AddAuthentication(o =>
             ClockSkew = TimeSpan.Zero,
             SaveSigninToken = true
         };
+#pragma warning restore CS8604 // Possible null reference argument.
         p.AutomaticRefreshInterval = TimeSpan.FromSeconds(10);
     });
 
@@ -185,16 +191,21 @@ app.UseCors(p =>
 });
 
 // Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI(s =>
+//
+//
+//
+//    s.SwaggerEndpoint("swagger.json", "v1.0.1");
+//    //s.RoutePrefix = string.Empty;
+//
+if (app.Environment.IsDevelopment())
 {
-    s.SwaggerEndpoint("swagger.json", "v1.0.1");
-    //s.RoutePrefix = string.Empty;
-});
-// if (app.Environment.IsDevelopment())
-// {
-    
-// }
+    app.UseSwagger();
+    app.UseSwaggerUI(s =>
+    {
+        s.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        s.RoutePrefix = string.Empty;
+    });
+}
 
 app.UseHttpsRedirection();
 

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace server.api.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMG : Migration
+    public partial class MG01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -238,6 +239,7 @@ namespace server.api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false),
                     Responsável = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Beneficiario = table.Column<string>(type: "TEXT", nullable: false),
                     DataRegistro = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -255,12 +257,12 @@ namespace server.api.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "DataAtualizacao", "DataRegistro", "Name", "NormalizedName" },
-                values: new object[] { 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 10, 27, 15, 16, 0, 512, DateTimeKind.Unspecified).AddTicks(8443), "MASTER", null });
+                values: new object[] { 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 7, 7, 37, 39, 492, DateTimeKind.Unspecified).AddTicks(1944), "MASTER", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DataAtualizacao", "DataNascimento", "DataRegistro", "Departamento", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NomeCompleto", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "a109389c-9049-4ea6-9a8f-10e9f9ee0d13", null, new DateTime(2023, 10, 27, 15, 16, 0, 512, DateTimeKind.Unspecified).AddTicks(8374), new DateTime(2023, 10, 27, 15, 16, 0, 512, DateTimeKind.Unspecified).AddTicks(8408), "Geral", "master@sifoca.ao", false, false, null, "USER MASTER", null, "MASTER", "AQAAAAIAAYagAAAAEHXMun7xG2rR7vmia7moygeXvyWFlsVKlGQ1SLVutNPu8XvQX/p3PQJsJc0tYX7zWQ==", "0000000", false, null, false, "master" });
+                values: new object[] { 1, 0, "669eb956-9984-4c27-8fb8-45402bf9272c", null, new DateTime(2023, 12, 7, 7, 37, 39, 492, DateTimeKind.Unspecified).AddTicks(1820), new DateTime(2023, 12, 7, 7, 37, 39, 492, DateTimeKind.Unspecified).AddTicks(1866), "Geral", "master@sifoca.ao", false, false, null, "MASTER USER", null, "MASTER", "AQAAAAIAAYagAAAAENvBMBolGny80CV/1h+YZsJwkyY9Tqc/2VpyzAdaPqIfKnsVCa77WyXS2vjoQD8oXw==", "0000000", false, null, false, "master" });
 
             migrationBuilder.InsertData(
                 table: "Tb_Fundo",

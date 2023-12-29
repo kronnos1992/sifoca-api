@@ -35,14 +35,18 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var role = await roleManager.CreateAsync(new AppRole { Name = "MASTER" });
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (role.Succeeded)
                 {
                     return role.Succeeded.ToString();
                 }
                 else
                 {
+#pragma warning disable CS8603 // Possible null reference return.
                     return role.Errors.ToString();
+#pragma warning restore CS8603 // Possible null reference return.
                 }
             }
             catch (System.Exception ex)
@@ -56,18 +60,15 @@ namespace server.api.Services.Functions
             {
                 var user = await userManager.FindByIdAsync(userId);
                 var role = await roleManager.FindByNameAsync(roleName);
-
-                if (user == null || user.UserName.ToString().IsNullOrEmpty())
+                if (user == null)
                 {
                     return "nenhum usuario encontrado";
                 }
-
                 if (!await roleManager.RoleExistsAsync(roleName))
                 {
-                    return "role não encontrada";
+                    return "perfil não encontrada";
                 }
-
-                var result = await userManager.AddToRoleAsync(user, roleName);
+                var result = await userManager.AddToRoleAsync(user, role.Name);
                 return result.ToString();
             }
             catch (Exception ex)
@@ -79,10 +80,12 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8601 // Possible null reference assignment.
                 var user = new AppUser
                 {
                     NomeCompleto = __user.NomeCompleto,
                     UserName = __user.Usuario,
+                    //NormalizedUserName = __user.Usuario,
                     Email = __user.Email,
                     PhoneNumber = __user.Telefone,
                     Departamento = __user.Departamento,
@@ -90,9 +93,12 @@ namespace server.api.Services.Functions
                     DataRegistro = Generic.GetCurrentAngolaDateTime(),
                     DataAtualizacao = null
                 };
-
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
                 var userMaped = await userManager.CreateAsync(user, __user.Senha);
-
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (userMaped.Succeeded)
                 {
                     return $"Nome Completo: {user.NomeCompleto} \n Telefone: {user.PhoneNumber} \n Email: {user.Email}";
@@ -106,7 +112,9 @@ namespace server.api.Services.Functions
         }
         public async Task<IEnumerable<AppRole>> GetRoles()
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var roles = await roleManager.Roles.Include(u => u.Users).ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (roles.Count == 0)
             {
                 throw new Exception("nenhum registro encontrado. ");
@@ -117,7 +125,9 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var users = await userManager.Users.ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (users.Count == 0)
                 {
                     throw new Exception("nenhum registro encontrado. ");
@@ -133,22 +143,47 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
                 var user = await userManager
                     .FindByNameAsync(login.Username) 
                     ?? throw new Exception("Usuário não encontrado.");
-
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
                 var output = await signInManager.CheckPasswordSignInAsync(user, login.Password, false);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (output.Succeeded)
                 {
-                    //var returnLogin = mapper.Map<LoginDTO>(user);
-                    var token = await GenerateToken(user);
-                    return new AuthResult
+                    // verificar se o usuario for do tipo master e retonar verdadeiro se for.
+                    var isInRole = await userManager.IsInRoleAsync(user, "MASTER");
+                    var token = await GenerateToken(user); 
+                    if (isInRole)
                     {
-                        Success = true,
-                        Token = token,
-                        SuccessMessage = "Login efeituado com sucesso!",
-                        FullUserName = user.UserName
-                    };
+                        return new AuthResult
+                        {
+                            Success = true,
+                            SuccessMessage = "Login efeituado com sucesso",
+                            Token = token,
+                            FullUserName = user.NomeCompleto,
+                            UserName = user.UserName,
+                            IsMaster = true
+                        };
+                    }
+                    // retornar false se não for                  
+                    else{
+                        return new AuthResult
+                        {
+                            Success = true,
+                            SuccessMessage = "Login efeituado com sucesso",
+                            Token = token,
+                            FullUserName = user.NomeCompleto,
+                            UserName = user.UserName,
+                            IsMaster = false
+                        };
+                    }                    
                 }
                 else
                 {
@@ -169,7 +204,9 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var user = await userManager.FindByIdAsync(userId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (user == null)
                 {
                     return false;
@@ -187,8 +224,10 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var role = await roleManager.FindByIdAsync(roleId)
                     ?? throw new NullReferenceException($"{roleId} does not exist");
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 await roleManager.DeleteAsync(role);
                 return true;
             }
@@ -201,14 +240,15 @@ namespace server.api.Services.Functions
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var user = await userManager.FindByIdAsync(userId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 if (user == null)
                 {
                     return false;
                 }
-
-                user.UserName = userDTO.Usuario;
                 user.Email = userDTO.Email;
+                //user.NormalizedUserName = userDTO.Usuario;
                 user.NomeCompleto = userDTO.NomeCompleto;
                 user.PhoneNumber = userDTO.Telefone;
                 user.DataAtualizacao = Generic.GetCurrentAngolaDateTime();
@@ -222,7 +262,9 @@ namespace server.api.Services.Functions
         }
         public async Task<bool> UpdateteRole(string roleId, RoleDTO roleDTO)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var role = await roleManager.FindByNameAsync(roleId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (role == null)
             {
                 return false;
@@ -233,18 +275,27 @@ namespace server.api.Services.Functions
         }
         public async Task<string> GenerateToken(AppUser user)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
             var claims = new List<Claim>{
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.GivenName, user.NomeCompleto),
                 new(ClaimTypes.Name, user.UserName)
             };
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 // Possible null reference argument.
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var roles = await userManager.GetRolesAsync(user);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
+#pragma warning disable CS8604 // Possible null reference argument.
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Key").Value));
+#pragma warning restore CS8604 // Possible null reference argument.
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

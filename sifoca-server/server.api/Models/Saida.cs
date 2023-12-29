@@ -4,5 +4,6 @@ namespace server.api.Models
     {
         public required string Responsável { get; set; }
         public required Movimento Movimento { get; set; }
+        public string Beneficiario { get; set; }
     }
 }

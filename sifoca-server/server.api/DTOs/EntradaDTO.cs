@@ -10,10 +10,11 @@ namespace server.api.DTOs
             MinimumLength = 5)
         ]
         public string? Descricao { get; set; }
+
         [DataType(DataType.Currency, ErrorMessage ="o campo valor, so aceita numeros")]
         [Required(ErrorMessage = "o campo valor é obrigatórion")]
-        
         public decimal Valor { get; set; }
+        
         [Required(ErrorMessage = "o campo tipo de pagamento é obrigatório")]
         [StringLength(
             maximumLength: 100,
@@ -31,7 +32,7 @@ namespace server.api.DTOs
         [Required(ErrorMessage = "o campo assinante é obrigatório")]
         [StringLength(
             maximumLength: 100,
-            MinimumLength = 5)
+            MinimumLength = 3)
         ]
         public string Assinante { get; set; } = "Particular";
     }

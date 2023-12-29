@@ -138,7 +138,7 @@ namespace server.api.Migrations
                         {
                             Id = 1,
                             DataAtualizacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DataRegistro = new DateTime(2023, 10, 27, 15, 16, 0, 512, DateTimeKind.Unspecified).AddTicks(8443),
+                            DataRegistro = new DateTime(2023, 12, 7, 7, 37, 39, 492, DateTimeKind.Unspecified).AddTicks(1944),
                             Name = "MASTER"
                         });
                 });
@@ -228,16 +228,16 @@ namespace server.api.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a109389c-9049-4ea6-9a8f-10e9f9ee0d13",
-                            DataNascimento = new DateTime(2023, 10, 27, 15, 16, 0, 512, DateTimeKind.Unspecified).AddTicks(8374),
-                            DataRegistro = new DateTime(2023, 10, 27, 15, 16, 0, 512, DateTimeKind.Unspecified).AddTicks(8408),
+                            ConcurrencyStamp = "669eb956-9984-4c27-8fb8-45402bf9272c",
+                            DataNascimento = new DateTime(2023, 12, 7, 7, 37, 39, 492, DateTimeKind.Unspecified).AddTicks(1820),
+                            DataRegistro = new DateTime(2023, 12, 7, 7, 37, 39, 492, DateTimeKind.Unspecified).AddTicks(1866),
                             Departamento = "Geral",
                             Email = "master@sifoca.ao",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NomeCompleto = "USER MASTER",
+                            NomeCompleto = "MASTER USER",
                             NormalizedUserName = "MASTER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHXMun7xG2rR7vmia7moygeXvyWFlsVKlGQ1SLVutNPu8XvQX/p3PQJsJc0tYX7zWQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENvBMBolGny80CV/1h+YZsJwkyY9Tqc/2VpyzAdaPqIfKnsVCa77WyXS2vjoQD8oXw==",
                             PhoneNumber = "0000000",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
@@ -371,6 +371,10 @@ namespace server.api.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Beneficiario")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("TEXT");

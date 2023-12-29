@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.api.DTOs;
 using server.api.Services.Contracts;
@@ -34,6 +35,23 @@ namespace server.api.Controllers
                 return BadRequest(ex);
             }
         }
+        [HttpGet("entrada/getchart")]
+        public async Task<IActionResult> GetAll(DateTime? dataInicial, DateTime? dataFinal, string? op)
+        {
+            try
+            {
+                var entradas = await contract.GetEntradas(dataInicial, dataFinal, op);
+                if (!entradas.Any())
+                {
+                    return NoContent();
+                }
+                return Ok(entradas); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
 
         [HttpGet("entrada/getbyop")]
         public async Task<IActionResult> GetByOperator(DateTime dataInicial, DateTime dataFinal)
@@ -41,7 +59,7 @@ namespace server.api.Controllers
             try
             {
                 var entradas = await contract.GetOpEntradas(dataInicial, dataFinal);
-                if (!entradas.Any())
+                if (entradas == null)
                 {
                     return NoContent();
                 }
@@ -90,7 +108,6 @@ namespace server.api.Controllers
         }
 
         [HttpGet("entrada/getbyid")]
-        [Route(nameof(GetById))]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -125,15 +142,8 @@ namespace server.api.Controllers
         [HttpPost("entrada/")]
         public async Task<IActionResult> Insert(EntradaDTO movimento)
         {
-            try
-            {
-                await contract.CreateEntrada(movimento);
-                return Ok(movimento);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erro de validação {ex.Message}");
-            }
+            await contract.CreateEntrada(movimento);
+            return Ok(movimento);
         }
 
         [HttpPut("entrada/{id}")]
@@ -152,13 +162,14 @@ namespace server.api.Controllers
         #endregion
 
         #region SAÍDA ENDPOINTS
+        
         [HttpGet("saida/")]
-        public async Task<IActionResult> GetAllSaidas()
+        public async Task<IActionResult> GetAllSaidas(DateTime data1, DateTime data2, string? op)
         {
             try
             {
-                var saidas = await contract.GetSaidas();
-                if (saidas == null)
+                var saidas = await contract.GetSaidas(data1, data2, op);
+                if (!saidas.Any())
                 {
                     return NoContent();
                 }
@@ -169,25 +180,6 @@ namespace server.api.Controllers
                 return BadRequest(ex);
             }
         }
-
-        [HttpGet("saida/{resp}")]
-        public async Task<IActionResult> GetByResponsavel(string resp)
-        {
-            try
-            {
-                var saidas = await contract.GetSaidas(resp);
-                if (saidas.Count() < 1)
-                {
-                    return NoContent();
-                }
-                return Ok(saidas);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
 
         [HttpGet("saida/{id:int}")]
         public async Task<IActionResult> GetOneSaida(int id)
@@ -253,6 +245,7 @@ namespace server.api.Controllers
 
         #region MOVIMENTO ENDPOINTS
         [HttpGet]
+        [Authorize(Roles = "MASTER")]
         public async Task<IActionResult> GetAllMovimentos(DateTime dataInicial, DateTime dataFinal)
         {
             dataInicial = Convert.ToDateTime("2023-10-20");

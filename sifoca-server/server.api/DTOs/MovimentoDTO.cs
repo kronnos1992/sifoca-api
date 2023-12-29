@@ -6,37 +6,17 @@ namespace server.api.DTOs
 {
     public class MovimentoDTO
     {
-        [Required(ErrorMessage = "o campo categoria é obrigatórion")]
-        [StringLength(
-            maximumLength: 100,
-            ErrorMessage = "o campo categoria requer no máximo 50 caracters",
-            MinimumLength = 5,
-            ErrorMessageResourceName = "o campo categoria requer no minimo 5 caracters")
-        ]
+        [Required(ErrorMessage = "o campo categoria é obrigatório")]
+        [StringLength(maximumLength: 100)]
         public string? Descricao { get; set; }
 
-
         [DataType(DataType.Currency)]
-        [Required(ErrorMessage = "o campo Descrição é obrigatórion")]
+        [Required(ErrorMessage = "o campo Descrição é obrigatório")]
         public decimal Valor { get; set; }
 
 
-        [Required(ErrorMessage = "o campo Operador é obrigatórion")]
-        [StringLength(
-            maximumLength: 100,
-            ErrorMessage = "o campo Operador requer no máximo 50 caracters",
-            MinimumLength = 2,
-            ErrorMessageResourceName = "o campo Operador requer no minimo 5 caracters")
-        ]
-        public string? Operador { get; set; }
-
-        [Required(ErrorMessage = "o campo Area é obrigatórion")]
-        [StringLength(
-            maximumLength: 100,
-            ErrorMessage = "o campo Area requer no máximo 50 caracters",
-            MinimumLength = 2,
-            ErrorMessageResourceName = "o campo Area requer no minimo 5 caracters")
-        ]
-        public string? Area { get; set; }
+        [Required(ErrorMessage = "o campo Operador é obrigatório")]
+        [StringLength(maximumLength: 100)]
+        public string? Beneficiario { get; set; }
     }
 }

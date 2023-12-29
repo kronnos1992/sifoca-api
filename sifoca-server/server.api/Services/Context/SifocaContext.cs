@@ -141,7 +141,7 @@ namespace server.api.Services.Context
                 .HasData(new AppUser
                 {
                     Id = 1,
-                    NomeCompleto = "USER MASTER",
+                    NomeCompleto = "MASTER USER",
                     UserName = "master",
                     Departamento = "Geral",
                     NormalizedUserName= "MASTER",

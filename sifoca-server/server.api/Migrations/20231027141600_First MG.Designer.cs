@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.api.Services.Context;
 
@@ -10,9 +11,11 @@ using server.api.Services.Context;
 namespace server.api.Migrations
 {
     [DbContext(typeof(SifocaContext))]
-    partial class SifocaContextModelSnapshot : ModelSnapshot
+    [Migration("20231027141600_First MG")]
+    partial class FirstMG
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");

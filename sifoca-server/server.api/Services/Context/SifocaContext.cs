@@ -1,24 +1,32 @@
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using server.api.Models;
+using server.api.Services.Functions;
 
 namespace server.api.Services.Context
 {
-    public class SifocaContext : DbContext
+    public class SifocaContext : IdentityDbContext<AppUser, AppRole, int,
+        IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public SifocaContext(DbContextOptions<SifocaContext> options) : base(options)
         {
 
         }
 
+
         public DbSet<Movimento> Tb_Movimento { get; set; }
         public DbSet<Entrada> Tb_Entrada { get; set; }
         public DbSet<Saida> Tb_Saida { get; set; }
         public DbSet<Fundo> Tb_Fundo { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override async void OnModelCreating(ModelBuilder modelBuilder)
         {
             // MOVIMENTOS
+            var passwordHasher = new PasswordHasher<IdentityUser>();
+            var hashedPassword = passwordHasher.HashPassword(null, "master");
 
             modelBuilder.Entity<Movimento>()
                 .HasMany(m => m.Entradas)
@@ -41,7 +49,13 @@ namespace server.api.Services.Context
             modelBuilder
                 .Entity<Movimento>()
                 .Property(p => p.Valor)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
+                .IsRequired();
+
+            modelBuilder
+                .Entity<Movimento>()
+                .Property(p => p.Caixa)
+                .HasPrecision(18, 2)
                 .IsRequired();
 
             modelBuilder
@@ -73,6 +87,9 @@ namespace server.api.Services.Context
                 .HasOne(p => p.Movimento)
                 .WithMany(p => p.Saidas);
 
+
+            // FUNDO
+
             modelBuilder
                 .Entity<Fundo>()
                 .HasKey(p => p.Id);
@@ -98,6 +115,62 @@ namespace server.api.Services.Context
                 {
                     Id = "caixa",
                     Total = 0
+                });
+
+            modelBuilder
+                .Entity<AppUserRole>()
+                .HasKey(p => new { p.UserId, p.RoleId });
+
+            modelBuilder
+                .Entity<AppUserRole>()
+                .HasOne(r => r.Role)
+                .WithMany(u => u.Users)
+                .HasForeignKey(fk => fk.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder
+                .Entity<AppUserRole>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Roles)
+                .HasForeignKey(fk => fk.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AppUser>()
+                .HasData(new AppUser
+                {
+                    Id = 1,
+                    NomeCompleto = "USER MASTER",
+                    UserName = "master",
+                    Departamento = "Geral",
+                    NormalizedUserName= "MASTER",
+                    Email = "master@sifoca.ao",
+                    PhoneNumber = "0000000",
+                    PasswordHash = hashedPassword,
+                    DataNascimento = Generic.GetCurrentAngolaDateTime(),
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                    DataAtualizacao = null
+                });
+
+            //await Generic.SeedInitialDataAsync();
+
+            modelBuilder
+                .Entity<AppRole>()
+                .HasData(new AppRole
+                {
+                    Id = 1,
+                    Name = "MASTER",
+                    DataRegistro = Generic.GetCurrentAngolaDateTime(),
+                });
+
+            modelBuilder
+                .Entity<AppUserRole>()
+                .HasData(new AppUserRole
+                {
+                    UserId = 1,
+                    RoleId = 1,
+                    
                 });
 
             base.OnModelCreating(modelBuilder);

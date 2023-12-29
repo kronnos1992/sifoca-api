@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace server.api.Models
 {
     public class Entrada : TabelaBase
     {
-        public string Operador { get; set; }
-        public string TipoPagamento { get; set; }
-        public string Assinante { get; set; }
-        public Movimento Movimento { get; set; }
+        public required string Operador { get; set; }
+        public required string FormaPagamento { get; set; }
+        public required string TipoPagamento { get; set; }
+        public required string Assinante { get; set; }
+        public required Movimento Movimento { get; set; }
     }
 }

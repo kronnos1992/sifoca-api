@@ -10,7 +10,7 @@ namespace server.api.Services.Contracts
         Task CreateEntrada(EntradaDTO entrada);
         Task UpdateEntrada(EntradaDTO entrada, int id);
         Task DeleteEntrada(int id);
-        Task<IEnumerable<Entrada>> GetEntradas(DateTime? dataInicial, DateTime? dataFinal, string? op);
+        Task<IEnumerable<Entrada>> GetEntradas(DateTime? dataInicial, DateTime? dataFinal);
         Task<IEnumerable<Entrada>> GetEntradasReport(DateTime? dataInicial, DateTime? dataFinal, string? op);
         Task<IEnumerable<object>> GetSumEntradas(DateTime? dataInicial, DateTime? dataFinal, string? op);
         Task<IEnumerable<object>> GetCountEntradas(DateTime? dataInicial, DateTime? dataFinal, string? op);

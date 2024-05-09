@@ -41,8 +41,6 @@ public class ResumoFunctions : IResumoContract
 
             var resumo = new ResumoDTO
             {
-                Entradas = todasEntradas,
-                Saidas = todasSaidas,
                 Remanescente = remanescente
             };
             

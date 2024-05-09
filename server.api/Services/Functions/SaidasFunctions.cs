@@ -100,27 +100,33 @@ namespace server.api.Services.Functions
             // Obter o usuário logado a partir do contexto HTTP
             var username = httpContextAccessor.HttpContext.User.Identity.Name;
             var user = await userManager.FindByNameAsync(username);
+
             try
             {
-               
-                var saidas = await sifoca.Tb_Saida
-                .AsSplitQuery()
-                .OrderByDescending(x => x.DataRegistro)
-                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal && p.Responsável.ToLower().Contains(user.UserName.ToLower()))
-                .ToListAsync();
-                if (saidas == null)
-                {   
-                    return null;
+                // Verificar se o usuário possui o perfil "master"
+                bool isMasterUser = await userManager.IsInRoleAsync(user, "MASTER".ToLower());
+
+                IQueryable<Saida> query = sifoca.Tb_Saida
+                    .OrderBy(x => x.DataRegistro)
+                    .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal);
+
+                if (!isMasterUser)
+                {
+                    // Se o usuário não for "master", filtrar apenas as saídas do usuário logado
+                    query = query.Where(p => p.Responsável.ToLower() == user.UserName.ToLower());
                 }
+
+                var saidas = await query.ToListAsync();
+
                 return saidas;
-                
-                 
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro na busca dos dados {ex.Message}");
+                throw new Exception($"Erro na busca dos dados: {ex.Message}");
             }
         }
+
+
         public async Task<IEnumerable<object>> GetSumSaidas(DateTime? dataInicial, DateTime? dataFinal, string? op)
         {
             try

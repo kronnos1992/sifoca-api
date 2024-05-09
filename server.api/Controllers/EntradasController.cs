@@ -28,11 +28,11 @@ namespace server.api.Controllers
         #region ENTRADA ENDPOINTS
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] DateTime dataInicial, [FromQuery] DateTime dataFinal, [FromQuery] string? op)
+        public async Task<IActionResult> GetAll([FromQuery] DateTime dataInicial, [FromQuery] DateTime dataFinal)
         {
             try
             {
-                var entradas = await contract.GetEntradas(dataInicial, dataFinal, op);
+                var entradas = await contract.GetEntradas(dataInicial, dataFinal);
                 if (!entradas.Any())
                 {
                     return NoContent();
@@ -51,7 +51,7 @@ namespace server.api.Controllers
         {
             try
             {
-                var entradas = await contract.GetEntradas(dataInicial, dataFinal, op);
+                var entradas = await contract.GetSumEntradas(dataInicial, dataFinal, op);
                 if (!entradas.Any())
                 {
                     return NoContent();

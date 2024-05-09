@@ -22,37 +22,26 @@ public class EntradasFunctions : IEntradasContract
     }
 
     #region ENTRADAS
-    public async Task<IEnumerable<Entrada>?> GetEntradas(DateTime? dataInicial, DateTime? dataFinal, string? op)
+    public async Task<IEnumerable<Entrada>?> GetEntradas(DateTime? dataInicial, DateTime? dataFinal)
     {
 
+        //buscar o usuario logado pelo contexto do http
+            string username = httpContextAccessor.HttpContext.User.Identity.Name
+                ??throw new Exception("Usuário não encontrado");
+        
+            var user = await userManager.FindByNameAsync(username)
+                ??throw new Exception("Nenhum usuario encontrado");
         try
         {
-            if(op == null)
-            {
-                var entradas = await sifoca.Tb_Entrada
-                
-                .OrderBy(x => x.DataRegistro)
-                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
-                .ToListAsync();
-                if (entradas == null)
-                {   
-                    return null;
-                }
-                return entradas;
+           var entradas = await sifoca.Tb_Entrada
+            .OrderBy(x => x.DataRegistro)
+            .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal && p.Operador.ToLower().Contains(user.UserName.ToLower()))
+            .ToListAsync();
+            if (entradas == null)
+            {   
+                return null;
             }
-            else{
-                var entradas = await sifoca.Tb_Entrada
-                
-                .OrderBy(x => x.DataRegistro)
-                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal && p.Operador.ToLower().Contains(op.ToLower()))
-                .ToListAsync();
-                if (entradas == null)
-                {   
-                    return null;
-                }
-                return entradas;
-            }
-             
+            return entradas;             
         }
         catch (Exception ex)
         {

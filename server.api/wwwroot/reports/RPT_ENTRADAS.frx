@@ -1,44 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/05/2024 07:33:46" ReportInfo.Modified="04/05/2024 08:10:47" ReportInfo.CreatorVersion="2024.1.3.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/05/2024 07:33:46" ReportInfo.Modified="05/24/2024 17:50:08" ReportInfo.CreatorVersion="2024.1.3.0">
   <Dictionary>
-    <SQLiteDataConnection Name="Connection" ConnectionString="rijcmlqIltkgxALMArhJ2W63qXqy2eiFPbfETUICOO/cp0EcgKmS1pNriPGPqDbD5+qqnXXZNHj47Ps9etfU8M0GzqF53dfxXuGFxGY4EMSji6zmTxyOGuqe1FR++BEJIT2MTxH3ZXqYYyvUNOgmZ1aDIXC7Q=="/>
-    <SQLiteDataConnection Name="Connection1" ConnectionString="rijcmlqIltkgxALMArhJ2W63qXqy2eiFPbfETUICOO/cp0EcgKmS1pNriPGPqDbD5+qqnXXZNHj47Ps9etfU8M0GzqF53dfxXuGFxGY4EMSji6zmTxyOGuqe1FR++BEJIT2MTxHoKI9xT2oOxHNZEKBA08XBg==">
-      <TableDataSource Name="Tb_Entrada1" DataType="System.Int32" Enabled="true" TableName="Tb_Entrada">
-        <Column Name="Id" Enabled="false" DataType="System.Int64"/>
+    <MsSqlDataConnection Name="MSSQLSIF" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGj2QoTFc3mfGRQYA189Kxu3QX4vHaNVGW/rMbK4Y0zI6LO0HC3PywiCQMWeMANZ9kR6N7DU5xmt2HFz46KGcFM9kNv6wjB21cBk305U4+W/lOhC3RQRk6KH50Ul1rCDMue6G9BRmaXMVkBmXlUTQwY9JUvzSZVS7SvK7dp746ts6Wcn7A8+X+C0AepWIl6lSWh+HWLJHSlH2J2UT5WTt0Bw=">
+      <TableDataSource Name="Tb_Entrada" DataType="System.Int32" Enabled="true" TableName="Tb_Entrada">
+        <Column Name="Id" DataType="System.Int32"/>
         <Column Name="Operador" DataType="System.String"/>
         <Column Name="FormaPagamento" DataType="System.String"/>
         <Column Name="FonteEntrada" DataType="System.String"/>
         <Column Name="DescricaoEntrada" DataType="System.String"/>
-        <Column Name="ValorEntrada" DataType="System.String"/>
-        <Column Name="DataRegistro" DataType="System.String"/>
-        <Column Name="DataAtualizacao" Enabled="false" DataType="System.String"/>
+        <Column Name="ValorEntrada" DataType="System.Decimal" Format="Currency"/>
+        <Column Name="DataRegistro" DataType="System.DateTime"/>
+        <Column Name="DataAtualizacao" DataType="System.DateTime"/>
       </TableDataSource>
-    </SQLiteDataConnection>
+    </MsSqlDataConnection>
+    <Total Name="TotalEntradas" Expression="[Tb_Entrada.ValorEntrada]" Evaluator="Data1"/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8" Fill.Color="CadetBlue">
-      <TextObject Name="Text4" Left="274.05" Top="9.45" Width="170.1" Height="18.9" Text="RELATORIO DE ENTRADAS" HorzAlign="Center" Font="Agave Nerd Font, 10pt, style=Bold"/>
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="94.5" Fill.Color="CadetBlue">
+      <TextObject Name="Text4" Left="226.8" Top="66.15" Width="311.85" Height="18.9" Text="RELATORIO DE ENTRADAS" HorzAlign="Center" Font="Agave Nerd Font, 18pt, style=Bold"/>
+      <PictureObject Name="Picture1" Left="9.45" Top="9.45" Width="94.5" Height="37.8" ImageFormat="Png" Image="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"/>
+      <TextObject Name="Text17" Left="9.45" Top="56.7" Width="94.5" Height="18.9" Text="POUPAR EM FAMILIA, FAZ BEM!" HorzAlign="Center" Font="Agave Nerd Font, 7pt, style=Bold"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="40.47" Width="718.2" Height="47.25">
+    <PageHeaderBand Name="PageHeader1" Top="97.17" Width="718.2" Height="37.8">
       <ShapeObject Name="Shape1" Top="9.45" Width="718.2" Height="28.35" Border.Color="Transparent" Fill.Color="Gainsboro"/>
       <TextObject Name="Text11" Top="9.45" Width="151.2" Height="28.35" Border.Color="Gray" Text="DESCRIÇÃO" HorzAlign="Center" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
       <TextObject Name="Text12" Left="151.2" Top="9.45" Width="75.6" Height="28.35" Border.Color="Gray" Text="MONTANTE" HorzAlign="Right" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text13" Left="226.8" Top="9.45" Width="103.95" Height="28.35" Border.Color="Gray" Text="ORIGEM" HorzAlign="Center" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text14" Left="340.2" Top="9.45" Width="94.5" Height="28.35" Border.Color="Gray" Text="FORM. PAGMTO" HorzAlign="Center" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text15" Left="444.15" Top="9.45" Width="113.4" Height="28.35" Border.Color="Gray" Text="OPERADOR" HorzAlign="Center" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
+      <TextObject Name="Text13" Left="226.8" Top="9.45" Width="103.95" Height="28.35" Border.Color="Gray" Text="ORIGEM" HorzAlign="Right" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
+      <TextObject Name="Text14" Left="340.2" Top="9.45" Width="94.5" Height="28.35" Border.Color="Gray" Text="FORM. PAGMTO" HorzAlign="Right" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
+      <TextObject Name="Text15" Left="444.15" Top="9.45" Width="113.4" Height="28.35" Border.Color="Gray" Text="OPERADOR" HorzAlign="Right" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
       <TextObject Name="Text16" Left="633.15" Top="9.45" Width="75.6" Height="28.35" Border.Color="Gray" Text="DATA" HorzAlign="Center" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="90.38" Width="718.2" Height="28.35" DataSource="Tb_Entrada1">
-      <TextObject Name="Text5" Width="151.2" Height="18.9" Border.Color="Transparent" Text="[Tb_Entrada1.DescricaoEntrada]" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text6" Left="160.65" Width="66.15" Height="18.9" Border.Color="Gray" Text="[Tb_Entrada1.ValorEntrada]" Format="Currency" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator="." Format.CurrencySymbol="Kz" Format.PositivePattern="2" Format.NegativePattern="9" HorzAlign="Right" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text7" Left="236.25" Width="103.95" Height="18.9" Border.Color="Gray" Text="[Tb_Entrada1.FonteEntrada]" HorzAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text8" Left="349.65" Width="94.5" Height="18.9" Border.Color="Gray" Text="[Tb_Entrada1.FormaPagamento]" HorzAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text9" Left="642.6" Width="75.6" Height="18.9" Border.Color="Gray" Text="[Tb_Entrada1.DataRegistro]" Format="Date" Format.Format="d" HorzAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text10" Left="453.6" Width="113.4" Height="18.9" Border.Color="Gray" Text="[Tb_Entrada1.Operador]" HorzAlign="Center" Font="Agave Nerd Font, 8pt"/>
+    <DataBand Name="Data1" Top="137.63" Width="718.2" Height="28.35" DataSource="Tb_Entrada">
+      <TextObject Name="Text18" Width="151.2" Height="18.9" Text="[Tb_Entrada.DescricaoEntrada]" Font="Agave Nerd Font, 7pt, style=Bold"/>
+      <TextObject Name="Text19" Left="151.2" Width="75.6" Height="18.9" Text="[Tb_Entrada.ValorEntrada]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Agave Nerd Font, 7pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text20" Left="226.8" Width="103.95" Height="18.9" Text="[Tb_Entrada.FonteEntrada]" HorzAlign="Right" Font="Agave Nerd Font, 7pt, style=Bold"/>
+      <TextObject Name="Text21" Left="340.2" Width="94.5" Height="18.9" Text="[Tb_Entrada.FormaPagamento]" HorzAlign="Right" Font="Agave Nerd Font, 7pt, style=Bold"/>
+      <TextObject Name="Text22" Left="444.15" Width="113.4" Height="18.9" Text="[Tb_Entrada.Operador]" HorzAlign="Right" Font="Agave Nerd Font, 7pt, style=Bold"/>
+      <TextObject Name="Text23" Left="633.15" Width="75.6" Height="18.9" Text="[Tb_Entrada.DataRegistro]" Format="Date" Format.Format="d" HorzAlign="Center" Font="Agave Nerd Font, 7pt, style=Bold"/>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="121.4" Width="718.2" Height="28.35">
-      <TextObject Name="Text2" Width="94.5" Height="28.35" Text="[PageN]" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
-      <TextObject Name="Text3" Left="623.7" Width="94.5" Height="28.35" Text="[Date]" HorzAlign="Right" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
+    <PageFooterBand Name="PageFooter1" Top="168.65" Width="718.2" Height="56.7" CanGrow="true" CanShrink="true">
+      <TextObject Name="Text2" Top="18.9" Width="94.5" Height="28.35" Text="[PageN]" VertAlign="Bottom" Font="Agave Nerd Font, 8pt"/>
+      <TextObject Name="Text3" Left="623.7" Top="18.9" Width="94.5" Height="28.35" Text="[Date]" HorzAlign="Right" VertAlign="Bottom" Font="Agave Nerd Font, 8pt"/>
+      <TextObject Name="Text24" Left="122.85" Width="94.5" Height="18.9" Border.Color="Transparent" Fill.Color="LightGray" Text="[TotalEntradas]" VertAlign="Center" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text25" Width="113.4" Height="18.9" Border.Color="Gray" Fill.Color="LightGray" Text="TOTAL DE ENTRADAS" HorzAlign="Center" VertAlign="Center" Font="Agave Nerd Font, 8pt"/>
     </PageFooterBand>
   </ReportPage>
 </Report>

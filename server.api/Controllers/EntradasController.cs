@@ -1,10 +1,6 @@
-
-using FastReport.Export.PdfSimple;
-using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using server.api.DTOs;
 using server.api.Services.Contracts;
-using server.api.Services.Functions;
 
 namespace server.api.Controllers
 {
@@ -116,38 +112,14 @@ namespace server.api.Controllers
                 return BadRequest(ex);
             }
         }
-
-        [HttpGet(nameof(GetEntradasReport))]
-        public async Task<IActionResult> GetEntradasReport(DateTime? dataInicial, DateTime? dataFinal, string? op)
-        {
-            var entradas = contract.GetEntradasReport(dataInicial, dataFinal, op);
-            if (entradas != null)
-            {
-                //configurando o relatorio
-                var webReport = new WebReport();
-                webReport.Report.Load(Path.Combine(environment.ContentRootPath, "wwwroot/reports", "RPT_ENTRADAS.frx"));
-                Generic.GenerateEntradasDataTableReports(entradas, webReport);
-
-                webReport.Report.Prepare();
-
-                // preparando o memory stream para o sistema fazer a leitura do ficheiro estatico
-                MemoryStream memory  = new();
-                webReport.Report.Export(new PDFSimpleExport(), memory);
-                memory.Flush();
-
-                byte[] arrayReport = memory.ToArray();
-                return File(arrayReport, "application/zip", "RPT_ENTRADAS.frx");
-            }
-            return BadRequest("Erro ao gerar o relatorio");
-        }
+        
         [HttpDelete]
-        [Route(nameof(Delete))]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await contract.DeleteEntrada(id);
-                return Created("", "Registro Eliminado");
+                return NoContent();
             }
             catch (Exception ex)
             {

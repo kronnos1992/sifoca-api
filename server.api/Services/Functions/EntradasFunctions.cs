@@ -25,23 +25,26 @@ public class EntradasFunctions : IEntradasContract
     public async Task<IEnumerable<Entrada>?> GetEntradas(DateTime? dataInicial, DateTime? dataFinal)
     {
 
-        //buscar o usuario logado pelo contexto do http
-            string username = httpContextAccessor.HttpContext.User.Identity.Name
-                ??throw new Exception("Usuário não encontrado");
-        
-            var user = await userManager.FindByNameAsync(username)
-                ??throw new Exception("Nenhum usuario encontrado");
+        // Obter o usuário logado a partir do contexto HTTP
+        var username = httpContextAccessor.HttpContext.User.Identity.Name;
+        var user = await userManager.FindByNameAsync(username);
+
         try
         {
-           var entradas = await sifoca.Tb_Entrada
-            .OrderBy(x => x.DataRegistro)
-            .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal && p.Operador.ToLower().Contains(user.UserName.ToLower()))
-            .ToListAsync();
-            if (entradas == null)
-            {   
-                return null;
-            }
-            return entradas;             
+            // Verificar se o usuário possui o perfil "master"
+            bool isMasterUser = await userManager.IsInRoleAsync(user, "MASTER".ToLower());
+
+            IQueryable<Entrada> query = sifoca.Tb_Entrada
+                .OrderBy(x => x.DataRegistro)
+                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal);
+
+            if (!isMasterUser)
+                {
+                    // Se o usuário não for "master", filtrar apenas as saídas do usuário logado
+                    query = query.Where(p => p.Operador.ToLower() == user.NomeCompleto.ToLower());
+                }
+            var entradas = await query.ToListAsync();
+            return entradas;            
         }
         catch (Exception ex)
         {
@@ -200,42 +203,6 @@ public class EntradasFunctions : IEntradasContract
         catch (Exception ex)
         {
             throw new Exception($"Erro de servidor, {ex.Message}");
-        }
-    }
-
-    public async Task<IEnumerable<Entrada>> GetEntradasReport(DateTime? dataInicial, DateTime? dataFinal, string? op)
-    {
-        try
-        {
-            if(op == null)
-            {
-                var entradas = await sifoca.Tb_Entrada
-                .OrderBy(x => x.DataRegistro)
-                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal)
-                .ToListAsync();
-                if (entradas == null)
-                {   
-                    return null;
-                }
-                return entradas;
-            }
-            else{
-                var entradas = await sifoca.Tb_Entrada
-                
-                .OrderBy(x => x.DataRegistro)
-                .Where(p => p.DataRegistro.Date >= dataInicial && p.DataRegistro.Date <= dataFinal && p.Operador.ToLower().Contains(op.ToLower()))
-                .ToListAsync();
-                if (entradas == null)
-                {   
-                    return null;
-                }
-                return entradas;
-            }
-             
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Erro na busca dos dados {ex.Message}");
         }
     }
 

@@ -43,5 +43,27 @@ namespace server.api.Services.Functions
                 report.Report.RegisterData(entradasTable, "Entradas");
             }
         }
+        public async static void GenerateSaidasDataTableReports(Task<IEnumerable<Saida>>? saidas, WebReport report)
+        {
+            var saidasTable = new DataTable();
+
+            saidasTable.Columns.Add("DESCRIÇÃO", typeof(string));
+            saidasTable.Columns.Add("MONTANTE", typeof(string));
+            saidasTable.Columns.Add("BENEFICIARIO", typeof(string));
+            saidasTable.Columns.Add("OPERADOR", typeof(string));
+            saidasTable.Columns.Add("DATA", typeof(string));
+
+            foreach (var saida in await saidas)
+            {
+                saidasTable.Rows.Add(
+                    saida.DescricaoSaida, 
+                    saida.ValorSaida, 
+                    saida.Beneficiario, 
+                    saida.Responsável, 
+                    saida.DataRegistro
+                );
+                report.Report.RegisterData(saidasTable, "Saidas");
+            }
+        }
     }
 }

@@ -26,11 +26,38 @@ namespace server.api.Services.Functions
             var username = httpContextAccessor.HttpContext.User.Identity.Name;
             var user = await userManager.FindByNameAsync(username);
 
+            // obter o remanescente
+            IQueryable<Entrada> queryEntradas = sifoca.Tb_Entrada
+                .AsSplitQuery()
+                .OrderByDescending(x => x.DataRegistro);
+
+            IQueryable<Saida> querySaidas = sifoca.Tb_Saida
+                .AsSplitQuery()
+                .OrderByDescending(x => x.DataRegistro); 
+
+            var todasEntradas = queryEntradas.ToList();
+            var todasSaidas = querySaidas.ToList();
+            decimal totalEntradas = todasEntradas.Sum(e => e.ValorEntrada);
+            decimal totalSaidas = todasSaidas.Sum(s => s.ValorSaida);
+            decimal remanescente = totalEntradas - totalSaidas;
+
             try
             {
-                var _saida = new Saida
+                // verificar o remanescente menor que a saida
+                if (saida.ValorSaida >= remanescente)
                 {
-                    Responsável = user.UserName.ToUpper(),
+                    throw new InvalidOperationException("O valor que deseja retirar é superior ao existente em caixa!");
+                }
+
+                // verificar remanescente menor que fundo minimo
+                else if (saida.ValorSaida >= 50000)
+                {
+                    throw new InvalidOperationException("O valor que deseja sacar é superior ao fundo mínimo");
+                }
+                else{
+                    var _saida = new Saida
+                {
+                    Responsável = user.NomeCompleto.ToUpper(),
                     DataRegistro = Generic.GetCurrentAngolaDateTime(),
                     Beneficiario = saida.Beneficiario.ToUpper(),
                     DataAtualizacao = null,
@@ -40,6 +67,8 @@ namespace server.api.Services.Functions
                 };
                 await sifoca.AddRangeAsync(_saida);
                 await sifoca.SaveChangesAsync();
+                }
+                
             }
             catch (Exception ex)
             {
@@ -113,7 +142,7 @@ namespace server.api.Services.Functions
                 if (!isMasterUser)
                 {
                     // Se o usuário não for "master", filtrar apenas as saídas do usuário logado
-                    query = query.Where(p => p.Responsável.ToLower() == user.UserName.ToLower());
+                    query = query.Where(p => p.Responsável.ToLower() == user.NomeCompleto.ToLower());
                 }
 
                 var saidas = await query.ToListAsync();
@@ -125,8 +154,6 @@ namespace server.api.Services.Functions
                 throw new Exception($"Erro na busca dos dados: {ex.Message}");
             }
         }
-
-
         public async Task<IEnumerable<object>> GetSumSaidas(DateTime? dataInicial, DateTime? dataFinal, string? op)
         {
             try

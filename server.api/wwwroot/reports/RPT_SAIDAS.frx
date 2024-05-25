@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/23/2024 19:11:19" ReportInfo.Modified="05/24/2024 19:04:13" ReportInfo.CreatorVersion="2024.1.3.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqM7gJFg/iaLrqMhRfGy5lGj2QoTFc3mfGRQYA189Kxu3QX4vHaNVGW/rMbK4Y0zI6LO0HC3PywiCQMWeMANZ9kR6N7DU5xmt2HFz46KGcFM9kNv6wjB21cBk305U4+W/lOhC3RQRk6KH50Ul1rCDMue6G9BRmaXMVkBmXlUTQwY9JUvzSZVS7SvK7dp746ts6Wcn7A8+X+C0AepWIl6lSWgueW0kDHT1odrKPkJTzB1g=">
+      <TableDataSource Name="Tb_Saida" DataType="System.Int32" Enabled="true" TableName="Tb_Saida">
+        <Column Name="Id" DataType="System.Int32"/>
+        <Column Name="Responsável" DataType="System.String"/>
+        <Column Name="Beneficiario" DataType="System.String"/>
+        <Column Name="DescricaoSaida" DataType="System.String"/>
+        <Column Name="ValorSaida" DataType="System.Decimal"/>
+        <Column Name="DataRegistro" DataType="System.DateTime"/>
+        <Column Name="DataAtualizacao" DataType="System.DateTime"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="DataInicial" DataType="System.DateTime" Expression="[Tb_Saida.DataRegistro]"/>
+    <Parameter Name="DataFim" DataType="System.DateTime" Expression="[Tb_Saida.DataRegistro]"/>
+    <Total Name="TOTAL SAIDAS" Expression="[Tb_Saida.ValorSaida]" Evaluator="Data1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="85.05" Fill.Color="CadetBlue">
+      <TextObject Name="Text2" Left="245.7" Top="66.15" Width="226.8" Height="18.9" Fill.Color="CadetBlue" Text="RELATÓRIO DE DESPESAS" HorzAlign="Center" Font="Agave Nerd Font, 14pt, style=Bold"/>
+      <PictureObject Name="Picture1" Left="18.9" Top="9.45" Width="94.5" Height="37.8" ImageFormat="Png" Image="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"/>
+      <TextObject Name="Text18" Left="18.9" Top="56.7" Width="94.5" Height="18.9" Text="POUPAR EM FAMILIA, FAZ BEM!" HorzAlign="Center" Font="Agave Nerd Font, 7pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="87.72" Width="718.2" Height="47.25">
+      <ShapeObject Name="Shape1" Top="9.45" Width="718.2" Height="28.35" Border.Color="Transparent" Fill.Color="LightGray"/>
+      <TextObject Name="Text4" Left="9.45" Top="18.9" Width="141.75" Height="18.9" Text="DESCRIÇÃO" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text6" Left="170.1" Top="18.9" Width="122.85" Height="18.9" Text="VALOR&#13;&#10;" HorzAlign="Right" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text8" Left="453.6" Top="18.9" Width="122.85" Height="18.9" Text="BENEFICIÁRIO" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text10" Left="595.35" Top="18.9" Width="103.95" Height="18.9" Text="DATA" HorzAlign="Right" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text12" Left="311.85" Top="18.9" Width="122.85" Height="18.9" Text="RESPONSÁVEL" Font="Agave Nerd Font, 8pt, style=Bold"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="137.63" Width="718.2" Height="37.8" DataSource="Tb_Saida">
+      <TextObject Name="Text5" Left="170.1" Width="122.85" Height="18.9" Text="[Tb_Saida.ValorSaida]" Format="Currency" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator="." Format.CurrencySymbol="R$" Format.PositivePattern="2" Format.NegativePattern="9" HorzAlign="Right" WordWrap="false" Font="Agave Nerd Font, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text7" Left="453.6" Width="122.85" Height="18.9" Text="[Tb_Saida.Beneficiario]" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text9" Left="595.35" Width="103.95" Height="18.9" Text="[Tb_Saida.DataRegistro]" Format="Date" Format.Format="d" HorzAlign="Right" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text11" Left="311.85" Width="122.85" Height="18.9" Text="[Tb_Saida.Responsável]" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text17" Left="9.45" Width="151.2" Height="18.9" Border.Color="Transparent" Text="[Tb_Saida.DescricaoSaida]" Font="Agave Nerd Font, 8pt, style=Bold"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="178.1" Width="718.2" Height="56.7">
+      <TextObject Name="Text13" Left="9.45" Top="28.35" Width="47.25" Height="18.9" Border.Color="Transparent" Text="[Page]" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text14" Left="623.7" Top="28.35" Width="94.5" Height="18.9" Border.Color="Transparent" Text="[Date]" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text15" Left="113.4" Width="94.5" Height="18.9" Border.Color="Transparent" Text="[TOTAL SAIDAS]" Font="Agave Nerd Font, 8pt, style=Bold"/>
+      <TextObject Name="Text16" Left="9.45" Width="103.95" Height="18.9" Text="Total de Saidas: " HorzAlign="Center" Font="Agave Nerd Font, 8pt, style=Bold"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

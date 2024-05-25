@@ -181,11 +181,13 @@ builder.Services.AddDbContext<SifocaContext>(options =>
 );
 
 // habilitar o consumo da BD ao FastReport
-FastReport.Utils.RegisteredObjects.AddConnection(typeof(SQLiteDataConnection));
+//FastReport.Utils.RegisteredObjects.AddConnection(typeof(SQLiteDataConnection));
+FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
 
 builder.Services.AddScoped<ISaidasContract, SaidasFunctions>();
 builder.Services.AddScoped<IEntradasContract, EntradasFunctions>();
 builder.Services.AddScoped<IAcessoContract, AcessoFunctions>();
+builder.Services.AddScoped<IRelatorioContract, RelatorioFunctions>();
 builder.Services.AddScoped<IResumoContract, ResumoFunctions>();
 
 var app = builder.Build();
@@ -197,15 +199,29 @@ app.UseCors(p =>
     .AllowAnyOrigin();
 });
 
+//configuração da segurança do trafego dos dados na rede
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+    context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+    
+    // Configuração do Content-Security-Policy (CSP)
+    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+    
+    await next();
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(s =>
     {
-        s.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        s.SwaggerEndpoint("index.html", "v1");
         s.RoutePrefix = string.Empty;
     });
 }
+
 
 app.UseHttpsRedirection();
 

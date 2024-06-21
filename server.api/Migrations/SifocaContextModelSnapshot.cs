@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.api.Services.Context;
 
 #nullable disable
 
-namespace server.api.Services.Context
+namespace server.api.Migrations
 {
     [DbContext(typeof(SifocaContext))]
-    [Migration("20240523021123_SqlServerFastReportDB")]
-    partial class SqlServerFastReportDB
+    partial class SifocaContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,7 +150,7 @@ namespace server.api.Services.Context
                         {
                             Id = 1,
                             DataAtualizacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DataRegistro = new DateTime(2024, 5, 23, 3, 11, 23, 829, DateTimeKind.Unspecified).AddTicks(4332),
+                            DataRegistro = new DateTime(2024, 6, 17, 18, 32, 13, 685, DateTimeKind.Unspecified).AddTicks(5891),
                             Name = "MASTER",
                             NormalizedName = "MASTER"
                         });
@@ -247,16 +244,16 @@ namespace server.api.Services.Context
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "25bcdc39-c039-4dd0-be63-d57b6e18c1a5",
-                            DataNascimento = new DateTime(2024, 5, 23, 3, 11, 23, 829, DateTimeKind.Unspecified).AddTicks(4079),
-                            DataRegistro = new DateTime(2024, 5, 23, 3, 11, 23, 829, DateTimeKind.Unspecified).AddTicks(4112),
+                            ConcurrencyStamp = "f13d2cbb-55a6-49b2-ac73-66d166546297",
+                            DataNascimento = new DateTime(2024, 6, 17, 18, 32, 13, 685, DateTimeKind.Unspecified).AddTicks(5665),
+                            DataRegistro = new DateTime(2024, 6, 17, 18, 32, 13, 685, DateTimeKind.Unspecified).AddTicks(5695),
                             Departamento = "Geral",
                             Email = "master@sifoca.ao",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NomeCompleto = "MASTER USER",
                             NormalizedUserName = "MASTER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKoc//H14VhoaGnwnRCh03f8sDx/TjnkUAAlJRcp0RWZV+sGxOldWtxbxzZN47zVFw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOjScf+eBDONrE1GIs9WynMZaZe7PkzV7D/mKNYjqXjuiUL3JSOlDiMfNsretom4Aw==",
                             PhoneNumber = "0000000",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "JFLMT5UKYWNBGTZPC3VK57BSJJDHU",
@@ -290,7 +287,7 @@ namespace server.api.Services.Context
                         {
                             UserId = 1,
                             RoleId = 1,
-                            DataRegistro = new DateTime(2024, 5, 23, 3, 11, 23, 829, DateTimeKind.Unspecified).AddTicks(4352)
+                            DataRegistro = new DateTime(2024, 6, 17, 18, 32, 13, 685, DateTimeKind.Unspecified).AddTicks(5907)
                         });
                 });
 

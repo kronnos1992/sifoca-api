@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "mssqlOptions": {
+                "appName": "SQLTools",
+                "useUTC": true,
+                "encrypt": true
+            },
+            "previewLimit": 50,
+            "server": "DESKTOP-UMLV118\\SQLEXPRESS",
+            "port": 1433,
+            "driver": "MSSQL",
+            "name": "SERVER SQL LOCAL",
+            "database": "DB_A3DF65_ROYALDB",
+            "username": "sa",
+            "password": "K_iala1992"
+        }
+    ]
+}

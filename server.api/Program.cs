@@ -176,7 +176,7 @@ _builder.Services.AddAuthorization();
 builder.Services.AddFastReport();
 
 builder.Services.AddDbContext<SifocaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("memory"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("cloud"))
     //.AddInterceptors()
 );
 
